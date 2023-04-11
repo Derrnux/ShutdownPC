@@ -13,3 +13,8 @@ The code of this repository includes a windows powershell script that shutdowns 
     2. Turn off the PC after finishing an update (not optimal solution, but will work if you know the needed time)
     
     I am sure you will find more!
+
+## Roadmap
+    1. Get it to work!
+    2. Read existing timers and select options (change, delete, continue)
+    3. install.ps1 script to automatically save a Desktop-Shortcut
