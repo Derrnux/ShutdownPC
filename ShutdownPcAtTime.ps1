@@ -73,7 +73,16 @@ Start-Sleep -Seconds ($shutdownTimeInSeconds-32)
 Get-Process -ID $ScriptPID | Set-WindowState -State SHOW
 Write-Host "Shutting down the PC in 30 seconds. Close this window to abort!" -ForegroundColor Red
 
-# Wait until finally shutting down the PC
-Start-Sleep -Seconds 30
+# Wait until finally shutting down the PC after 30 seconds
+[Console]::Beep(500, 80)
+Start-Sleep -Seconds 20
+
+# Count down the last 10 seconds
+for ($i = 10; $i -gt 0; $i--) {
+    [Console]::Beep(500, 80)
+    Write-Host "Shutting down the PC in $i seconds. Close this window to abort!" -ForegroundColor Red
+    Start-Sleep -Seconds 1
+}
+
 Write-TempFiles -processID "" -shutdownTime ""
 Stop-Computer -Force
