@@ -15,6 +15,6 @@ The code of this repository includes a windows powershell script that shutdowns 
     I am sure you will find more!
 
 ## Roadmap
-    1. Get it to work!
-    2. Read existing timers and select options (change, delete, continue)
+    1. Run a job in the background that waits and then shuts down the PC
+    2. Read existing background-timers and select options (change, delete, continue)
     3. install.ps1 script to automatically save a Desktop-Shortcut
