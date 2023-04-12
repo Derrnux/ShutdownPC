@@ -24,12 +24,19 @@ catch {
     Exit
 }
 
+# Read config.json file
+$configFile = "$ScriptDirectory\config.json"
+$config = Get-Content $configFile | ConvertFrom-Json
+
+
 # Check if a process is already running. If yes, give info about shutdown time and time remaining.
 $savedPID = Get-Content "$ScriptDirectory\temp\pid.txt"
 if($savedPID) {
     if (Test-ProcessRunning -ProcessId $savedPID) {
         Write-TimeRemainingInfo
         $processRunning = $true
+    }else{
+        Write-TempFiles -processID "" -shutdownTime ""
     }
 }
 
@@ -98,6 +105,7 @@ if ($processRunning) {
             }else{
                 Write-Host "The process $savedPID is not running anymore..." -ForegroundColor Yellow
             }
+            Write-TempFiles -processID "" -shutdownTime ""
         }else{
             $savedShutdownTime = Get-Content "$ScriptDirectory\temp\shutdownTime.txt"
             Write-Host "Nothing changed. The PC will be shut down as before: " -NoNewline -ForegroundColor White
@@ -142,10 +150,14 @@ Write-Host "The PC will be shut down at " -NoNewline
 Write-Host "->" (Get-Date).AddSeconds($shutdownTimeInSeconds).ToString("HH:mm:ss") "<-" -ForegroundColor Black -BackgroundColor White
 Write-Host ""
 Write-Host "This window will be hidden in 10 seconds, unless you skip with 'ENTER'" -ForegroundColor Yellow
-Write-Host "It will be shown again 30 seconds before the shutdown." -ForegroundColor White
+if($config.shutdownWarning) {
+    Write-Host "It will be shown again "$config.shutdownWarningTimeSeconds" seconds before the shutdown." -ForegroundColor White
+}
 
 # Show the text for a maximum of 10 seconds. Skip if the user presses enter.
+$millisecondsInWait = 0
 for ($i = 100; $i -gt 0; $i--) {
+    $millisecondsInWait += 100
     Start-Sleep -Milliseconds 100
     if ($Host.UI.RawUI.KeyAvailable) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
@@ -156,23 +168,38 @@ for ($i = 100; $i -gt 0; $i--) {
 # Hide the PowerShell window
 Get-Process -ID $ScriptPID | Set-WindowState -State HIDE
 
-# Wait until showing the window again. This is done to give the user a chance to abort the shutdown.
-Start-Sleep -Seconds ($shutdownTimeInSeconds-32)
-Get-Process -ID $ScriptPID | Set-WindowState -State SHOW
-Clear-Host
-Write-Host "Shutting down the PC in 30 seconds. Close this window to abort!" -ForegroundColor Red
-
-# Wait until finally shutting down the PC after 30 seconds
-[Console]::Beep(500, 80)
-Start-Sleep -Seconds 20
-
-# Count down the last 10 seconds
-for ($i = 10; $i -gt 0; $i--) {
-    [Console]::Beep(500, 80)
+if($config.shutdownWarning){
+    # Wait until showing the window again. This is done to give the user a chance to abort the shutdown.
+    Start-Sleep -Milliseconds ($shutdownTimeInSeconds * 1000 - ($millisecondsInWait) - (($config.shutdownWarningTimeSeconds) * 1000))
+    Get-Process -ID $ScriptPID | Set-WindowState -State SHOW
     Clear-Host
-    Write-Host "Shutting down the PC in $i seconds. Close this window to abort!" -ForegroundColor Red
-    Start-Sleep -Seconds 1
+    Write-Host "Shutting down the PC in "$config.shutdownWarningTimeSeconds" seconds. Close this window to abort!" -ForegroundColor Red
+
+    # Wait until finally shutting down the PC after 30 seconds
+    if($config.warningSound){
+        [Console]::Beep($config.warningSoundFrequency, $config.warningSoundDurationMilliseconds)
+    }
+
+    if($config.shutdownCountdown) {
+        $countdownTime = $config.shutdownCountdownTimeSeconds
+        Start-Sleep -Seconds (($config.shutdownWarningTimeSeconds) - $countdownTime)
+
+        # Count down the last '$config.shutdownCountdownTimeSeconds' seconds
+        for ($i = $countdownTime; $i -gt 0; $i--) {
+            if($config.warningSound){
+                [Console]::Beep($config.warningSoundFrequency, $config.warningSoundDurationMilliseconds)
+            }
+            Write-Host "Shutting down the PC in $i seconds. Close this window to abort!" -ForegroundColor Red
+            Start-Sleep -Seconds 1
+        }
+        
+    }else{
+        Start-Sleep -Seconds ($config.shutdownWarningTimeSeconds)
+    }
+}else{
+    Start-Sleep -Milliseconds (($shutdownTimeInSeconds) * 1000 - ($millisecondsInWait))
 }
+
 
 # Clear the temp files and shut down the PC
 Write-TempFiles -processID "" -shutdownTime ""

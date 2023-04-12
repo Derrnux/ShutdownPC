@@ -1,0 +1,9 @@
+{
+    "shutdownWarning": true,
+    "shutdownWarningTimeSeconds": 30,
+    "shutdownCountdown": true,
+    "shutdownCountdownTimeSeconds": 10,
+    "warningSound": true,
+    "warningSoundFrequency": 500,
+    "warningSoundDurationMilliseconds": 80
+}
