@@ -42,9 +42,9 @@ This is more dangerous, but can be used for testing purposes.
 __Creating a Desktop Shortcut.__
 
 1. Go to the Windows desktop (or wherever you want the shortcut to be)
-2. *Right-Click* then *Click* __"Shortcut"__
+2. *Right-Click*, then *Click* __"Shortcut"__
 3. You are now prompted to specify a file path, use this format: 
-   'location of PowerShell.exe' 'location of *ShutdownPC.ps1* script'
+   `'location of PowerShell.exe' 'location of *ShutdownPC.ps1* script'`
 
    Your link then should then look something like this:
    `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe C:\...\...\ShutdownPC\ShutdownPC.ps1`
@@ -54,7 +54,7 @@ __Creating a Desktop Shortcut.__
    To do this select __"Maximized"__ from the drop-down menu next to __"Run"__
 6. Now *Click* __"OK"__ again
 
-*You will now have access to it from the Windows search bar as well. Try it out!
+*You will now have access to it from the Windows search bar as well. Try it out!*
 
 ## Use-Cases
 + Turn off your PC after watching a movie
