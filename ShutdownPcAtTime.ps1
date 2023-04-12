@@ -61,7 +61,6 @@ if($savedPID) {
         Get-Process -ID $ScriptPID | Stop-Process -Force
     }
 }
-
 Write-TempFiles -processID $ScriptPID -shutdownTime (Get-Date).AddSeconds($shutdownTimeInSeconds).ToString("HH:mm")
 Start-Sleep -Seconds 5
 
@@ -84,5 +83,6 @@ for ($i = 10; $i -gt 0; $i--) {
     Start-Sleep -Seconds 1
 }
 
+# Clear the temp files and shut down the PC
 Write-TempFiles -processID "" -shutdownTime ""
 Stop-Computer -Force
