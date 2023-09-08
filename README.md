@@ -42,17 +42,21 @@ This is more dangerous, but can be used for testing purposes.
 __Creating a Desktop Shortcut.__
 
 1. Go to the Windows desktop (or wherever you want the shortcut to be)
-2. *Right-Click*, then *Click* __"Shortcut"__
+2. *Right-Click*, then *Click* __"New"__, then *Click* __"Shortcut"__
 3. You are now prompted to specify a file path, use this format: 
    `'location of PowerShell.exe' 'location of *ShutdownPC.ps1* script'`
 
    Your link then should then look something like this:
    `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe C:\...\...\ShutdownPC\ShutdownPC.ps1`
-4. *Click* on __"Advanced"__, then check the box next to __"Run as administrator"__
+4. Save your selection and name the shortcut. e.g. "ShutdownPC".
+5. Save the shortcut.
+
+6. Now *Right-Click*, then *Click* __"Properties"__
+7. *Click* on __"Advanced"__, then check the box next to __"Run as administrator"__
    *Click* __"OK"__
-5. Optionally, choose to always open the window maximized so it always fills the screen. 
+8. Optionally, choose to always open the window maximized so it always fills the screen. 
    To do this select __"Maximized"__ from the drop-down menu next to __"Run"__
-6. Now *Click* __"OK"__ again
+9. Now *Click* __"OK"__ again
 
 *You will now have access to it from the Windows search bar as well. Try it out!*
 
