@@ -5,7 +5,7 @@ It is the main script of the ShutdownPC project.
 The PC is shut down using the 'Stop-Computer -Force' command, this requires administrative privileges.
 
 Author: Dagh Zeppenfeld
-Version: 12.04.2023
+Version: 20.02.2024
 ------------------------------------------------------------------------------------#>
 
 # Include required files
@@ -37,6 +37,7 @@ if($savedPID) {
         $processRunning = $true
     }else{
         Write-TempFiles -processID "" -shutdownTime ""
+        Write-DateFile -date ""
     }
 }
 
@@ -122,7 +123,7 @@ if ($processRunning) {
 $shutdownTimeParsed = $null
 Clear-Host
 while (!$shutdownTimeInSeconds) {
-    $shutdownTime = Read-Host "After which time do you want to shutdown the PC? (format: HH:mm)"
+    $shutdownTime = Read-Host "After which time do you want to shutdown the PC? (format: HH:mm | max: 23:59)"
     try {
         $shutdownTimeParsed = [datetime]::ParseExact($shutdownTime, "HH:mm", $null)
         $shutdownTimeInSeconds = $shutdownTimeParsed.TimeOfDay.TotalSeconds
@@ -143,6 +144,7 @@ if($savedPID) {
     }
 }
 Write-TempFiles -processID $ScriptPID -shutdownTime (Get-Date).AddSeconds($shutdownTimeInSeconds).ToString("HH:mm:ss")
+Write-DateFile -date (Get-Date).AddSeconds($shutdownTimeInSeconds).ToString("yyyy-MM-dd")
 
 # Give the user info about the shutdown time
 Clear-Host
@@ -203,4 +205,6 @@ if($config.shutdownWarning){
 
 # Clear the temp files and shut down the PC
 Write-TempFiles -processID "" -shutdownTime ""
+Write-DateFile -date ""
+Start-Sleep -Milliseconds 50
 Stop-Computer -Force
